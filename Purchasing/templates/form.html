@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Purchasing Form</title>
+	<link rel="icon" href="{{ url_for('static', filename='/images/css.ico') }}" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        /* New CSS class for the form with a different style */
+        .custom-form {
+            max-width: 350px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 6px;
+            margin-bottom: 16px;
+            resize: vertical;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            max-width: 10ch;  /* Limiting the width to 20 characters */
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        a {
+            text-decoration: none;
+            color: #4CAF50;
+        }
+		
+		/* New CSS class for the button */
+        .toggle-button {
+            background-color: #008CBA;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        /* Add hover effect to the button */
+        .toggle-button:hover {
+            background-color: #004B65;
+        }
+    </style>
+    <script>
+        function showPopup(index) {
+            var passkey = prompt("Enter passkey:", "");
+
+            // Check if the passkey is correct
+            if (passkey === '2515152') {
+                // Redirect to the respective URL based on the button pressed        	
+                // Toggle button pressed
+                window.location.href = "/toggle/" + index;
+            } else {
+                alert("Incorrect passkey. Action aborted.");
+            }
+        }
+    </script>
+    <script>
+        function showPopup2(index) {
+            var passkey = prompt("Enter passkey:", "");
+
+            // Check if the passkey is correct
+            if (passkey === '2515152') {
+                // Redirect to the respective URL based on the button pressed
+                if (confirm("Are you sure you want to perform this action?")) {
+                    window.location.href = "/delete/" + Math.abs(index);
+                }
+            } else {
+                alert("Incorrect passkey. Action aborted.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Purchasing Form</h1>
+    <form class="custom-form" method="POST" action="/">
+        <label for="name">Name:</label>
+        <input type="text" name="name" required><br>
+
+        <label for="brand">Brand:</label>
+        <input type="text" name="brand" required><br>
+
+        <label for="item_model_part">Item Model/Part Number:</label>
+        <input type="text" name="item_model_part" required><br>
+
+        <label for="description">Description:</label>
+        <textarea name="description" required></textarea><br>
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" required><br>
+
+        <label for="date_needed">Date Needed:</label>
+        <input type="date" name="date_needed" required><br>
+
+        <label for="link">Link:</label>
+        <input type="text" name="link" required><br>
+
+        <label for="brand_substitute_ok">Brand Substitute OK:</label>
+        <input type="checkbox" name="brand_substitute_ok"><br>
+
+        <label for="model_substitute_ok">Model Substitute OK:</label>
+        <input type="checkbox" name="model_substitute_ok"><br>
+
+        <label class="hidden" for="ordered">Ordered:</label>
+        <select class="hidden" name="ordered">
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+        </select><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Purchasing Data</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Brand</th>
+            <th>Item Model/Part Number</th>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Date Needed</th>
+            <th>Link</th>
+            <th>Brand Substitute OK</th>
+            <th>Model Substitute OK</th>
+            <th>Ordered</th>
+            <th></th>
+            <th>Action</th>
+        </tr>
+        {% for row in data %}
+        <tr>
+            {% for value in row %}
+            <td>{{ value }}</td>
+            {% endfor %}
+            <td>
+                <form method="POST" action="/toggle/{{ loop.index0 }}">
+                    <input type="hidden" name="_method" value="PUT">
+					<button type="button" class="toggle-button" onclick="showPopup({{ loop.index0 }})">Mark Ordered</button>
+                </form>
+            </td>
+            <td><a href="#" onclick="showPopup2({{ -loop.index0 }})">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

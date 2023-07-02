@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Corsetti Structural Steel Inc</title>
+	<link rel="icon" href="{{ url_for('static', filename='/images/css.ico') }}" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+		
+		h1 {
+    color: darkblue;
+  }
+
+        .container {
+            text-align: center;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-container input[type=text] {
+            padding: 8px;
+            width: 300px;
+        }
+
+        .record-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .record-list li {
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+		<img src="{{ url_for('static', filename='/images/Corsetti.png') }}" style="width: 450px; height: auto;">
+
+		<h1>Safety Data Sheets</h1>
+
+        <div class="search-container">
+            <input type="text" id="search-input" onkeyup="searchFunction()" placeholder="Search...">
+        </div>
+        
+        <ul id="record-list" class="record-list">
+            {% for record in records %}
+                <li>{{ record['Product'] }} - {{ record['Keyword'] }} - <a href="pdf/{{ record['PDF'] }}.pdf">{{ record['PDF'] }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        function searchFunction() {
+            var input, filter, ul, li, txtValue;
+            input = document.getElementById('search-input');
+            filter = input.value.toUpperCase();
+            ul = document.getElementById('record-list');
+            li = ul.getElementsByTagName('li');
+
+            for (var i = 0; i < li.length; i++) {
+                txtValue = li[i].textContent || li[i].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = '';
+                } else {
+                    li[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
